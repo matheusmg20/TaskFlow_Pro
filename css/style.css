@@ -5,6 +5,7 @@
     /* Tema Claro (Padrão) */
     --cor-primaria: #007bff;
     --cor-secundaria: #6c757d;
+    --cor-terciaria: #007bffa2;
     --cor-fundo: #f8f9fa;
     --cor-fundo-principal: #e9ecef;
     --cor-card: #ffffff;
@@ -97,7 +98,11 @@ body:not(.sidebar-expandida) #sidebar h1 { font-size: 0; }
     cursor: pointer;
 }
 
-#sidebar nav button:hover, #sidebar nav button.ativo {
+#sidebar nav button.ativo {
+    background-color: var(--cor-terciaria);
+}
+
+#sidebar nav button:hover{
     background-color: var(--cor-primaria);
 }
 
