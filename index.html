@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Pro - Gerenciamento de Pedidos</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="sidebar-expandida">
+    <div id="sidebar">
+        <h1>TaskFlow Pro</h1>
+        <nav>
+            <button onclick="mostrarSecao('dashboard')" data-secao="dashboard"><i class="fas fa-chart-line"></i> <span>Dashboard</span></button>
+            <button onclick="mostrarSecao('kanban')" class="ativo" data-secao="kanban"><i class="fas fa-columns"></i> <span>Kanban</span></button>
+            <button onclick="mostrarSecao('novo-pedido')" data-secao="novo-pedido"><i class="fas fa-plus-circle"></i> <span>Novo Pedido</span></button>
+            <button onclick="mostrarSecao('clientes')" data-secao="clientes"><i class="fas fa-users"></i> <span>Clientes</span></button>
+            <button onclick="mostrarSecao('servicos')" data-secao="servicos"><i class="fas fa-tools"></i> <span>Serviços</span></button>
+            <button onclick="mostrarSecao('agenda')" data-secao="agenda"><i class="fas fa-calendar-alt"></i> <span>Agenda</span></button>
+            <button onclick="mostrarSecao('historico')" data-secao="historico"><i class="fas fa-history"></i> <span>Histórico</span></button>
+        </nav>
+        <div id="sidebar-footer">
+            <button id="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-arrow-left"></i></button>
+            <button id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+    <button id="btn-notificacoes" class="btn-icon">
+        <i class="fas fa-bell"></i>
+        <span id="bell-badge" class="badge" style="display:none;">0</span>
+    </button>
+    
+    <div id="main-content">
+        <main class="container">
+            <div id="notificacoes-alerta" class="alerta-box"></div>
+
+            <section id="secao-dashboard" class="secao">
+                <h2>Dashboard de Indicadores</h2>
+                <div id="dashboard-view" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div class="indicador-card"><i class="fas fa-money-bill-wave"></i> <h3>Lucro Total Estimado</h3> <p id="indicador-lucro-total">R$ 0,00</p></div>
+                    <div class="indicador-card"><i class="fas fa-tasks"></i> <h3>Pedidos em Progresso</h3> <p id="indicador-em-progresso">0</p></div>
+                    <div class="indicador-card"><i class="fas fa-check-circle"></i> <h3>Pedidos Concluídos (Mês)</h3> <p id="indicador-concluidos-mes">0</p></div>
+                    <div class="indicador-card"><i class="fas fa-users"></i> <h3>Clientes Cadastrados</h3> <p id="indicador-clientes">0</p></div>
+                </div>
+                <h3 style="margin-top: 30px;">Distribuição de Status</h3>
+                <div id="grafico-status" style="height: 300px; background-color: var(--cor-card); padding: 10px; border-radius: 8px;">
+                </div>
+            </section>
+
+            <section id="secao-kanban" class="secao ativa">
+                <h2>Kanban</h2>
+                <div id="kanban-board">
+                    <div class="kanban-coluna" data-status="a-fazer"><h3>A Fazer</h3><div class="kanban-cards" id="coluna-a-fazer"></div></div>
+                    <div class="kanban-coluna" data-status="em-progresso"><h3>Em Progresso</h3><div class="kanban-cards" id="coluna-em-progresso"></div></div>
+                    <div class="kanban-coluna" data-status="revisao"><h3>Revisão/Aprovação</h3><div class="kanban-cards" id="coluna-revisao"></div></div>
+                    <div class="kanban-coluna" data-status="concluido"><h3>Concluído</h3><div class="kanban-cards" id="coluna-concluido"></div></div>
+                </div>
+            </section>
+
+            <section id="secao-novo-pedido" class="secao">
+                <h2>Cadastrar Pedidos</h2>
+                <form id="form-pedido" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="campo" style="grid-column: 1 / -1;"><label for="pedido-cliente">Cliente:</label><select id="pedido-cliente" required></select></div>
+                    
+                    <div style="grid-column: 1 / -1;">
+                        <h3>Serviços do Pedido</h3>
+                        <div id="servicos-do-pedido-container">
+                            <div class="servico-item" style="display: grid; grid-template-columns: 3fr 1fr 50px; gap: 10px; margin-bottom: 10px;">
+                                <select class="pedido-servico-select" required></select>
+                                <input type="number" min="1" value="1" class="pedido-servico-quantidade" required>
+                                <button type="button" class="btn-remover-servico" onclick="removerServico(this)" style="background-color: var(--cor-primaria); color: white; border-radius: 4px; cursor: pointer;"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="adicionarNovoServicoInput()" style="padding: 5px 10px; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px;" id="btn-adicionar-servico"><i class="fas fa-plus"></i> Adicionar Serviço</button>
+                    </div>
+
+                    <div class="campo"><label for="pedido-titulo">Título do Pedido:</label><input type="text" id="pedido-titulo" required></div>
+                    <div class="campo"><label for="pedido-data-entrega">Data de Entrega:</label><input type="date" id="pedido-data-entrega" required></div>
+                    <div class="campo"><label for="pedido-prioridade">Prioridade:</label><select id="pedido-prioridade" required><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option></select></div>
+                    
+                    <div class="campo" style="grid-column: 1 / -1;"><label for="pedido-descricao">Descrição/Briefing:</label><textarea id="pedido-descricao" rows="3"></textarea></div>
+                    <button type="submit" style="grid-column: 1 / -1; padding: 10px 20px; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer;">Cadastrar Pedido</button>
+                </form>
+            </section>
+
+            <section id="secao-clientes" class="secao">
+                <h2>Cadastro de Clientes</h2>
+                <form id="form-cliente" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="campo"><label for="cliente-nome">Nome do Cliente:</label><input type="text" id="cliente-nome" required></div>
+                    <div class="campo"><label for="cliente-email">E-mail:</label><input type="email" id="cliente-email" required></div>
+                    <div class="campo"><label for="cliente-telefone">Telefone:</label><input type="tel" id="cliente-telefone"></div>
+                    <div class="campo"><label for="cliente-empresa">Empresa:</label><input type="text" id="cliente-empresa"></div>
+                    <button type="submit" style="grid-column: 1 / -1; padding: 10px 20px; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer;">Adicionar Cliente</button>
+                </form>
+                <h3 style="margin-top: 30px;">Clientes Cadastrados</h3>
+                <div id="lista-clientes"></div>
+            </section>
+
+            <section id="secao-servicos" class="secao">
+                <h2>Cadastro de Serviços</h2>
+                <form id="form-servico" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="campo"><label for="servico-nome">Nome do Serviço:</label><input type="text" id="servico-nome" required></div>
+                    <div class="campo"><label for="servico-valor">Valor Estimado (R$):</label><input type="text" id="servico-valor" required placeholder="Ex: 50,00 ou 1.200,00"></div>
+                    <div class="campo" style="grid-column: 1 / -1;"><label for="servico-descricao">Detalhes do Serviço:</label><textarea id="servico-descricao" rows="2"></textarea></div>
+                    <button type="submit" style="grid-column: 1 / -1; padding: 10px 20px; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer;">Adicionar Serviço</button>
+                </form>
+                <h3 style="margin-top: 30px;">Serviços Oferecidos</h3>
+                <div id="lista-servicos"></div>
+            </section>
+
+            <section id="secao-agenda" class="secao">
+                <h2>Agenda de Entregas</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <button onclick="mudarMes(-1)" style="background: none; border: none; cursor: pointer; color: var(--cor-texto);"><i class="fas fa-chevron-left"></i> Mês Anterior</button>
+                    <h3 id="mes-ano-titulo"></h3>
+                    <button onclick="mudarMes(1)" style="background: none; border: none; cursor: pointer; color: var(--cor-texto);">Próximo Mês <i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div id="calendario-view">
+                    <div class="dia-semana">Dom</div><div class="dia-semana">Seg</div><div class="dia-semana">Ter</div><div class="dia-semana">Qua</div><div class="dia-semana">Qui</div><div class="dia-semana">Sex</div><div class="dia-semana">Sáb</div>
+                </div>
+            </section>
+
+            <section id="secao-historico" class="secao">
+                <h2>Histórico de Pedidos</h2>
+                <div class="cards-indicadores">
+                    <div class="card-p">Total Concluídos: <span id="hist-total">0</span></div>
+                    <div class="card-p">Faturamento Total: <span id="hist-faturamento">R$ 0,00</span></div>
+                </div>
+                <div id="lista-historico"></div>
+            </section>
+        </main>
+    </div>
+    
+    <div id="modal-overlay" onclick="fecharModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 2000; justify-content: center; align-items: center;">
+        <div id="modal-content" onclick="event.stopPropagation()">
+            <button id="modal-close" onclick="fecharModal()">&times;</button>
+            <h3 id="modal-titulo">Detalhes do Pedido</h3>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

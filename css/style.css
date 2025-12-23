@@ -1,0 +1,366 @@
+/* ================================================= */
+/* == VARIÁVEIS DE TEMA E ESTILOS GLOBAIS ========== */
+/* ================================================= */
+:root {
+    /* Tema Claro (Padrão) */
+    --cor-primaria: #007bff;
+    --cor-secundaria: #6c757d;
+    --cor-fundo: #f8f9fa;
+    --cor-fundo-principal: #e9ecef;
+    --cor-card: #ffffff;
+    --cor-texto: #212529;
+    --cor-sidebar: #343a40;
+    --cor-sidebar-texto: white;
+    --cor-alerta: #dc3545;
+    --cor-alerta-fundo: #f8d7da;
+    --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --cor-input-fundo: #ffffff;
+    --cor-input-borda: #ccc;
+    --cor-dragover: rgba(0, 123, 255, 0.3);
+}
+
+/* Tema Escuro */
+body.dark-mode {
+    --cor-primaria: #4c96ff;
+    --cor-secundaria: #adb5bd;
+    --cor-fundo: #212529;
+    --cor-fundo-principal: #343a40;
+    --cor-card: #495057;
+    --cor-texto: #f8f9fa;
+    --cor-sidebar: #1a1e23;
+    --cor-sidebar-texto: #f8f9fa;
+    --cor-alerta: #ff6b6b;
+    --cor-alerta-fundo: #5c3f43;
+    --sombra: 0 4px 10px rgba(0, 0, 0, 0.5);
+    --cor-input-fundo: #596168;
+    --cor-input-borda: #6c757d;
+    --cor-dragover: rgba(76, 150, 255, 0.3);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s, color 0.3s, margin-left 0.3s, width 0.3s;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    line-height: 1.6;
+    display: flex;
+    user-select: none;
+}
+
+/* --- SIDEBAR RETRÁTIL --- */
+#sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--cor-sidebar);
+    color: var(--cor-sidebar-texto);
+    padding-top: 20px;
+    box-shadow: var(--sombra);
+    z-index: 1000;
+    overflow-y: auto; /* Para garantir que o menu caiba em telas menores */
+}
+
+#sidebar::-webkit-scrollbar{
+    display: none;
+}
+
+/* Sidebar Fechada */
+body:not(.sidebar-expandida) #sidebar { width: 60px; }
+body:not(.sidebar-expandida) #sidebar span { display: none; }
+body:not(.sidebar-expandida) #sidebar h1 { font-size: 0; }
+
+#sidebar h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+    white-space: nowrap;
+}
+
+#sidebar nav button {
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    padding: 15px 20px;
+    background: none;
+    border: none;
+    color: var(--cor-sidebar-texto);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#sidebar nav button:hover, #sidebar nav button.ativo {
+    background-color: var(--cor-primaria);
+}
+
+#sidebar nav button i {
+    margin-right: 10px;
+    width: 20px; /* Garante que os ícones fiquem alinhados */
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+#sidebar-footer {
+    position: absolute; /* Sticky para ficar no final da tela */
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--cor-sidebar); /* Garante que o fundo seja sólido */
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+#sidebar-footer button {
+    background: none;
+    border: none;
+    color: var(--cor-sidebar-texto);
+    cursor: pointer;
+    padding: 5px;
+}
+
+
+/* --- CONTEÚDO PRINCIPAL --- */
+#main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 250px; 
+    overflow-x: hidden;
+}
+body:not(.sidebar-expandida) #main-content { margin-left: 60px; }
+
+.container { max-width: 1400px; margin: 0 auto; }
+
+h2 { border-bottom: 2px solid var(--cor-primaria); padding-bottom: 10px; margin-bottom: 20px; color: var(--cor-primaria); }
+
+/* --- Seções e Formulários --- */
+.secao {
+    background-color: var(--cor-card);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--sombra);
+    margin-bottom: 20px;
+    display: none;
+}
+.secao.ativa { display: block; }
+
+input, textarea, select {
+    padding: 10px;
+    border: 1px solid var(--cor-input-borda);
+    border-radius: 4px;
+    width: 100%;
+    background-color: var(--cor-input-fundo);
+    color: var(--cor-texto);
+}
+
+/* Estilo para tabelas de Clientes/Serviços */
+.tabela-dados { width: 100%; border-collapse: collapse; margin-top: 15px; }
+.tabela-dados th, .tabela-dados td { border: 1px solid var(--cor-input-borda); padding: 10px; text-align: left; }
+.tabela-dados th { background-color: var(--cor-fundo-principal); }
+.btn-excluir { background-color: var(--cor-alerta); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+
+/* --- Notificações de Alerta --- */
+.alerta-box {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    background-color: var(--cor-alerta-fundo);
+    color: var(--cor-alerta);
+    border: 1px solid var(--cor-alerta);
+}
+.alerta-box ul { list-style: none; }
+.alerta-box li { margin-bottom: 5px; }
+
+/* --- Dashboard --- */
+.indicador-card {
+    background-color: var(--cor-fundo-principal);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: var(--sombra);
+}
+.indicador-card i { font-size: 2rem; color: var(--cor-primaria); margin-bottom: 10px; }
+.indicador-card h3 { font-size: 1.1rem; color: var(--cor-texto); margin-bottom: 5px; }
+.indicador-card p { font-size: 1.8rem; font-weight: bold; color: var(--cor-primaria); }
+
+/* --- Kanban Board (Corrigido para evitar rolagem X) --- */
+#kanban-board {
+    display: flex;
+    gap: 15px;
+    /* Remove a rolagem horizontal da coluna, pois ela será gerenciada dentro da div.kanban-cards */
+    overflow-x: auto; 
+    padding: 10px 0;
+}
+
+.kanban-coluna {
+    min-width: 300px;
+    background-color: var(--cor-fundo-principal);
+    padding: 15px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.kanban-cards {
+    flex-grow: 1;
+    overflow-y: auto; /* Permite rolagem vertical apenas na área dos cards */
+    padding-right: 5px;
+}
+
+.kanban-card {
+    background-color: var(--cor-card);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    border-left: 5px solid #ffc107;
+    /* QUEBRA DE LINHA FORÇADA: Garante que o conteúdo quebre e não force a largura da coluna */
+    word-wrap: break-word; 
+    white-space: normal;
+    overflow: hidden; /* Oculta qualquer overflow extra do card */
+}
+.kanban-card.arrastando { opacity: 0.5; border: 2px dashed var(--cor-primaria); }
+.kanban-coluna.dragover { border: 2px dashed var(--cor-dragover); background-color: var(--cor-dragover); }
+
+/* Cores de Prioridade */
+.kanban-card.prioridade-alta { border-left-color: #dc3545; }
+.kanban-card.prioridade-media { border-left-color: #ffc107; }
+.kanban-card.prioridade-baixa { border-left-color: #28a745; }
+
+
+/* --- Modal --- */
+#modal-content {
+    background-color: var(--cor-card);
+    color: var(--cor-texto);
+    padding: 30px;
+    border-radius: 8px;
+    width: 450px;
+    max-width: 90%;
+    box-shadow: var(--sombra);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+#modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--cor-secundaria);
+}
+
+/* --- Calendário --- */
+#calendario-view { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; }
+.dia-semana { font-weight: bold; color: var(--cor-primaria); padding: 5px; }
+.dia-celula { background-color: var(--cor-fundo-principal); padding: 10px; border-radius: 4px; min-height: 100px; text-align: left; font-size: 0.85em; overflow: auto; }
+.dia-celula.hoje { border: 2px solid var(--cor-primaria); }
+.tarefa-dia { display: block; margin-top: 5px; padding: 3px; background-color: rgba(0, 123, 255, 0.1); border-radius: 3px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tarefa-dia.vencendo { background-color: rgba(220, 53, 69, 0.2); color: var(--cor-alerta); font-weight: bold; }
+
+/* Correção para o título não quebrar linha e forçar a rolagem lateral */
+.kanban-card {
+    /* Garante que o card se ajusta ao contêiner, forçando o conteúdo a quebrar */
+    width: 100%; 
+    min-width: 180px; /* Mantém um tamanho mínimo legível */
+    word-wrap: break-word; /* Quebra palavras longas que não cabem */
+    overflow-wrap: break-word; /* Quebra palavras longas que não cabem */
+}
+
+/* Aplica a quebra de linha especificamente no título do card */
+.kanban-card .card-titulo {
+    font-weight: bold;
+    margin-bottom: 5px;
+    white-space: normal; /* ESSENCIAL: Permite que o texto quebre linha */
+    overflow: hidden; /* Garante que não haja rolagem se houver quebra */
+    text-overflow: ellipsis; /* Opcional: Adiciona reticências se o texto ainda for muito longo */
+}
+
+#btn-notificacoes{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 20px;
+    border: none;
+    background-color: rgb(65, 65, 65);
+    color: white;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 20px;
+}
+
+#btn-notificacoes *{
+    margin: 0;
+    padding: 0;
+}
+
+.dia-celula.hoje {
+    background-color: rgba(44, 62, 80, 1); /* Um fundo suave */
+    border: 2px solid var(--cor-primaria, #3498db); /* Borda com a cor principal */
+    position: relative;
+}
+
+.dia-celula.hoje strong {
+    color: var(--cor-primaria, #3498db);
+}
+
+/* Opcional: Um pequeno ponto ou marca indicando 'hoje' */
+.dia-celula.hoje::after {
+    content: 'Hoje';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.6em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: var(--cor-primaria, #3498db);
+}
+
+/* Cores para as tarefas no calendário */
+.tarefa-dia.prioridade-baixa {
+    background-color: #2ecc7081 !important; /* Verde */
+    border: solid 1px #2ecc71 !important; /* Verde */
+    color: white;
+}
+
+.tarefa-dia.prioridade-media {
+    background-color: #f1c40f6c !important; /* Amarelo/Laranja */
+    border: solid 1px #f1c40f !important; /* Amarelo/Laranja */
+    color: white; /* Texto escuro para melhor leitura no amarelo */
+}
+
+.tarefa-dia.prioridade-alta {
+    background-color: #e74d3c67 !important; /* Vermelho */
+    border: solid 1px #e74c3c !important; /* Vermelho */
+    color: white;
+}
+
+/* Ajuste opcional para o texto não ficar colado na borda */
+.tarefa-dia {
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 2px;
+    display: block;
+    font-size: 0.85em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
