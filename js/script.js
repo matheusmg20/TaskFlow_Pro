@@ -108,7 +108,7 @@ if (inputValor) {
         // e depois volta para string para aplicar a máscara
         value = (parseInt(value, 10)).toString();
 
-        // Garante que tenha pelo menos 3 dígitos para formatar os centavos (ex: 0,05 ou 0,75)
+        // Garante que tenha pelo menos 3 dígitos para formatar os centavos
         while (value.length < 3) { 
             value = '0' + value; 
         }
@@ -363,7 +363,7 @@ function excluirPedidoModal() {
 }
 
 // ==================================================
-// == HISTÓRICO E RECIBOS (INTELIGENTES) ============
+// ============== HISTÓRICO E RECIBOS ===============
 // ==================================================
 
 function renderizarHistorico() {
@@ -552,7 +552,6 @@ function renderizarCalendario() {
     const ano = mesAtual.getFullYear();
     const mes = mesAtual.getMonth();
     
-    // Pegamos a data de hoje para comparação de destaque
     const hoje = new Date();
     const diaHoje = hoje.getDate();
     const mesHoje = hoje.getMonth();
@@ -718,10 +717,14 @@ function abrirNotificacoes() {
 // ==================================================
 
 function alternarMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.querySelector('main');
-    if (sidebar) sidebar.classList.toggle('recolhido');
-    if (main) main.classList.toggle('expandido');
+  document.body.classList.toggle('sidebar-expandida');
+
+  // opcional: atualizar ícone de direção
+  const btnIcon = document.querySelector('#btn-menu i');
+  if (btnIcon) {
+    const expandida = document.body.classList.contains('sidebar-expandida');
+    btnIcon.className = expandida ? 'fas fa-arrow-left' : 'fas fa-arrow-right';
+  }
 }
 
 function alternarTema() {
@@ -748,8 +751,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2. Menu Hambúrguer
+    document.body.classList.add('sidebar-expandida');
     const btnMenu = document.getElementById('btn-menu');
-    if (btnMenu) btnMenu.onclick = alternarMenu;
+    if (btnMenu) btnMenu.addEventListener('click', alternarMenu);
 
     // 3. Botão Tema
     const btnTema = document.getElementById('btn-tema');

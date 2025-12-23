@@ -54,7 +54,14 @@ body {
     user-select: none;
 }
 
+textarea{
+    resize: none;
+    height: 200px;
+}
+
 /* --- SIDEBAR RETRÁTIL --- */
+
+/* Sidebar: estilo base */
 #sidebar {
     width: 250px;
     position: fixed;
@@ -66,18 +73,38 @@ body {
     padding-top: 20px;
     box-shadow: var(--sombra);
     z-index: 1000;
-    overflow-y: auto; /* Para garantir que o menu caiba em telas menores */
+    overflow-y: auto; /* manter rolagem se necessário */
+    transition: width .25s ease; /* animação suave ao recolher/expandir */
 }
 
-#sidebar::-webkit-scrollbar{
+/* esconder scrollbar WebKit */
+#sidebar::-webkit-scrollbar {
     display: none;
 }
 
-/* Sidebar Fechada */
+/* ===== Estados de expansão ===== */
+/* Aberta (padrão): body possui .sidebar-expandida */
+body.sidebar-expandida #sidebar { width: 250px; }
+
+/* Fechada: quando body NÃO tem .sidebar-expandida */
 body:not(.sidebar-expandida) #sidebar { width: 60px; }
 body:not(.sidebar-expandida) #sidebar span { display: none; }
 body:not(.sidebar-expandida) #sidebar h1 { font-size: 0; }
 
+/* ===== Conteúdo principal ===== */
+/* Se você usa a tag <main>, estas regras alinham o conteúdo ao deslocamento da sidebar */
+main {
+    /* O conteúdo deve “sair” de trás da sidebar fixa */
+    margin-left: 50px;              /* compatível com sidebar aberta */
+    transition: margin-left .5s ease;
+}
+
+/* Quando sidebar está recolhida, conteúdo se aproxima da esquerda */
+body:not(.sidebar-expandida) main {
+    margin-left: 250px;
+}
+
+/* ===== Tipografia e navegação da sidebar ===== */
 #sidebar h1 {
     text-align: center;
     margin-bottom: 30px;
@@ -86,7 +113,7 @@ body:not(.sidebar-expandida) #sidebar h1 { font-size: 0; }
 }
 
 #sidebar nav button {
-    display: flex; /* Para alinhar ícone e texto */
+    display: flex;            /* alinha ícone e texto */
     align-items: center;
     width: 100%;
     text-align: left;
@@ -102,29 +129,31 @@ body:not(.sidebar-expandida) #sidebar h1 { font-size: 0; }
     background-color: var(--cor-terciaria);
 }
 
-#sidebar nav button:hover{
+#sidebar nav button:hover {
     background-color: var(--cor-primaria);
 }
 
 #sidebar nav button i {
     margin-right: 10px;
-    width: 20px; /* Garante que os ícones fiquem alinhados */
+    width: 20px;              /* ícones alinhados */
     text-align: center;
     font-size: 1.2rem;
 }
 
+/* ===== Footer da sidebar ===== */
 #sidebar-footer {
-    position: absolute; /* Sticky para ficar no final da tela */
+    position: absolute;  /* fixa ao final da sidebar */
     bottom: 0;
     width: 100%;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 10px;
     display: flex;
     justify-content: space-between;
-    background-color: var(--cor-sidebar); /* Garante que o fundo seja sólido */
+    background-color: var(--cor-sidebar);
     overflow-x: hidden;
     overflow-y: hidden;
 }
+
 #sidebar-footer button {
     background: none;
     border: none;
@@ -133,6 +162,14 @@ body:not(.sidebar-expandida) #sidebar h1 { font-size: 0; }
     padding: 5px;
 }
 
+/* (Opcional) Modo ícones centralizados quando recolhido */
+body:not(.sidebar-expandida) #sidebar nav button {
+    justify-content: center;
+    padding: 12px 0;
+}
+body:not(.sidebar-expandida) #sidebar nav button i {
+    margin-right: 0;
+}
 
 /* --- CONTEÚDO PRINCIPAL --- */
 #main-content {
@@ -204,6 +241,10 @@ input, textarea, select {
     /* Remove a rolagem horizontal da coluna, pois ela será gerenciada dentro da div.kanban-cards */
     overflow-x: auto; 
     padding: 10px 0;
+}
+
+#kanban-board > div{
+    flex: 1;
 }
 
 .kanban-coluna {
@@ -295,14 +336,19 @@ input, textarea, select {
     text-overflow: ellipsis; /* Opcional: Adiciona reticências se o texto ainda for muito longo */
 }
 
+.dark-mode .btn-icon{
+    background-color: rgb(65, 65, 65) !important;
+    color: white !important;
+}
+
 #btn-notificacoes{
     position: absolute;
     top: 20px;
     right: 20px;
     font-size: 20px;
     border: none;
-    background-color: rgb(65, 65, 65);
-    color: white;
+    background-color: rgb(230, 230, 230);
+    color: rgb(65, 65, 65);
     border-radius: 30px;
     cursor: pointer;
     display: flex;
@@ -317,10 +363,23 @@ input, textarea, select {
     padding: 0;
 }
 
+.btn-remover-servico{
+    background-color: var(--cor-primaria); 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .dia-celula.hoje {
-    background-color: rgba(44, 62, 80, 1); /* Um fundo suave */
+    background-color: rgb(188, 213, 238); /* Um fundo suave */
     border: 2px solid var(--cor-primaria, #3498db); /* Borda com a cor principal */
     position: relative;
+}
+
+.dark-mode .dia-celula.hoje{
+    background-color: rgba(44, 62, 80, 1); /* Um fundo suave */
+    border: 2px solid var(--cor-primaria, #3498db); /* Borda com a cor principal */
 }
 
 .dia-celula.hoje strong {
@@ -343,19 +402,26 @@ input, textarea, select {
 .tarefa-dia.prioridade-baixa {
     background-color: #2ecc7081 !important; /* Verde */
     border: solid 1px #2ecc71 !important; /* Verde */
-    color: white;
+    color: black;
 }
+
 
 .tarefa-dia.prioridade-media {
     background-color: #f1c40f6c !important; /* Amarelo/Laranja */
     border: solid 1px #f1c40f !important; /* Amarelo/Laranja */
-    color: white; /* Texto escuro para melhor leitura no amarelo */
+    color: black;
 }
 
 .tarefa-dia.prioridade-alta {
     background-color: #e74d3c67 !important; /* Vermelho */
     border: solid 1px #e74c3c !important; /* Vermelho */
-    color: white;
+    color: black;
+}
+
+.dark-mode.tarefa-dia.prioridade-baixa,
+.dark-mode.tarefa-dia.prioridade-media,
+.dark-mode.tarefa-dia.prioridade-alta{
+        color: white;
 }
 
 /* Ajuste opcional para o texto não ficar colado na borda */

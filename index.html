@@ -20,8 +20,8 @@
             <button onclick="mostrarSecao('historico')" data-secao="historico"><i class="fas fa-history"></i> <span>Histórico</span></button>
         </nav>
         <div id="sidebar-footer">
-            <button id="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-arrow-left"></i></button>
-            <button id="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            <button id="btn-menu"><i class="fas fa-arrow-left"></i></button>
+            <button id="btn-tema" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
         </div>
     </div>
     <button id="btn-notificacoes" class="btn-icon">
@@ -67,7 +67,7 @@
                             <div class="servico-item" style="display: grid; grid-template-columns: 3fr 1fr 50px; gap: 10px; margin-bottom: 10px;">
                                 <select class="pedido-servico-select" required></select>
                                 <input type="number" min="1" value="1" class="pedido-servico-quantidade" required>
-                                <button type="button" class="btn-remover-servico" onclick="removerServico(this)" style="background-color: var(--cor-primaria); color: white; border-radius: 4px; cursor: pointer;"><i class="fas fa-times"></i></button>
+                                <button type="button" class="btn-remover-servico" onclick="removerServico(this)" style="border-radius: 4px; cursor: pointer;"><i class="fas fa-times"></i></button>
                             </div>
                         </div>
                         <button type="button" onclick="adicionarNovoServicoInput()" style="padding: 5px 10px; background-color: var(--cor-primaria); color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px;" id="btn-adicionar-servico"><i class="fas fa-plus"></i> Adicionar Serviço</button>
